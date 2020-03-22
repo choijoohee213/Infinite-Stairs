@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: f68f778f2b0932a4ab0658bf8d3f1d7d
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: CookieRun
+  fontNames:
+  - CookieRun
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c59c10030d03f4647958ec5449d8300e, type: 3}
+  - {fileID: 12800000, guid: d307e94abe0031c4bb55305d28cd5b26, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
