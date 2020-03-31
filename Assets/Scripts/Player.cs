@@ -4,54 +4,71 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    Animator anim;
+    public Animator anim;
+    public AudioSource[] sound;
     public GameManager gameManager;
-    public bool isStairMove = false;
-    public int buttonIndex;
-    public bool isleft = true;
-    public bool isDie = false;
+    public DSLManager dslManager;
+    public bool isStairMove = false, isleft = true, isDie = false, 
+        isClimbBtn = false, isChangeDirBtn = false;
+    public int buttonIndex, money;
 
     void Start()
     {
         anim = GetComponent<Animator>();
-
+        money = dslManager.GetMoney();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Climb()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) && !isDie)
-        {
-            if (Input.GetMouseButtonDown(0)) buttonIndex = 0;
-            else if (Input.GetMouseButtonDown(1))
-            {
-                buttonIndex = 1;
-                isleft = !isleft;
-            }
-            MoveAnimation();
-            isStairMove = true;
-        }
-
-
-        if (isDie) anim.SetTrigger("Die");
+        if (isDie || isChangeDirBtn) return;
+        gameManager.StairMove(0,isleft);
+        MoveAnimation();
+        isStairMove = true;
     }
+
+    public void ChangeDir()
+    {
+        if (isDie || isClimbBtn) return;
+        isleft = !isleft;
+        gameManager.StairMove(1, isleft);
+        MoveAnimation();
+        isStairMove = true;
+    }
+
 
     public void MoveAnimation()
     {
-        //FilpX
+        //Change left and right when changing direction
         if (!isleft)
             transform.rotation = Quaternion.Euler(0, -180, 0);
         else
             transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        anim.SetInteger("Moving",0);
+        anim.SetBool("Move",true);
+        gameManager.PlaySound(1);
         Invoke("IdleAnimation", 0.05f);
         
     }
 
     public void IdleAnimation()
     {
-        anim.SetInteger("Moving", -1);
+        anim.SetBool("Move", false);
     }
 
+    public void SoundOnOff(bool soundOn) {
+        sound[0].mute = !soundOn;
+        sound[1].mute = !soundOn;
+        sound[2].mute = !soundOn;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Coin")
+        {
+            collision.gameObject.SetActive(false);
+            gameManager.PlaySound(0);
+            money += 2;
+            dslManager.LoadMoney(money);
+        }
+    }
 }
