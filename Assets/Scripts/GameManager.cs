@@ -17,17 +17,17 @@ public class GameManager : MonoBehaviour {
     public Image gauge;
     public Button[] settingButtons;
 
-    Queue<int> stairInform;
-    int stairCount, score, sceneCount;
+    int score, sceneCount;
     bool gaugeStart = false, vibrationOn = true;
-    float gaugeRedcutionRate = 0.0016f;
+    float gaugeRedcutionRate = 0.0025f;
+    public bool[] IsChangeDir = new bool[20];
 
     Vector3 beforePos,
-    startPos = new Vector3(-0.9f, -1.5f, 0),
-    leftPos = new Vector3(-0.9f, 0.5f, 0),
-    rightPos = new Vector3(0.9f, 0.5f, 0),
-    leftDir = new Vector3(0.9f, -0.5f, 0),
-    rightDir = new Vector3(-0.9f, -0.5f, 0);
+    startPos = new Vector3(-0.8f, -1.5f, 0),
+    leftPos = new Vector3(-0.8f, 0.4f, 0),
+    rightPos = new Vector3(0.8f, 0.4f, 0),
+    leftDir = new Vector3(0.8f, -0.4f, 0),
+    rightDir = new Vector3(-0.8f, -0.4f, 0);
 
     enum State { start, leftDir, rightDir }
     State state = State.start;
@@ -38,10 +38,6 @@ public class GameManager : MonoBehaviour {
         player = objectManager.player.GetComponent<Player>();
         player.gameManager = this;
         player.dslManager = dslManager;
-
-        stairInform = new Queue<int>();
-        stairCount = Random.Range(1, 11);
-        for (int i = 0; i < stairCount + 1; i++) stairInform.Enqueue(0);
 
         Init();
         GaugeReduce();
@@ -54,13 +50,11 @@ public class GameManager : MonoBehaviour {
         if (player.isStairMove) {
             player.isStairMove = false;
             gaugeStart = true;
-            
         }
 
         //Game Over When Gauge Becomes 0
         if (gauge.fillAmount == 0 && !player.isDie)
             GameOver();
-
     }
 
 
@@ -71,6 +65,7 @@ public class GameManager : MonoBehaviour {
             switch (state) {
                 case State.start:
                     stairs[i].transform.position = startPos;
+                    state = State.leftDir;
                     break;
                 case State.leftDir:
                     stairs[i].transform.position = beforePos + leftPos;
@@ -81,25 +76,24 @@ public class GameManager : MonoBehaviour {
             }
             beforePos = stairs[i].transform.position;
 
-            if (state == State.start)
-                state = State.leftDir;
-            else {
+            if (i != 0) {
                 //Coin object activation according to random probability
                 if (Random.Range(1, 9) < 3) objectManager.MakeObj("coin", i);
-
-                if (--stairCount == 0) {
+                if (Random.Range(1, 9) < 3 && i < 19) {
                     if (state == State.leftDir) state = State.rightDir;
                     else if (state == State.rightDir) state = State.leftDir;
-                    stairCount = Random.Range(1, 9);
-                    PushQueue(stairCount);
+                    IsChangeDir[i + 1] = true;
                 }
             }
         }
     }
 
 
+
+
     //Spawn The Stairs At The Random Location
     void SpawnStair(int num) {
+        IsChangeDir[num + 1 == 20 ? 0 : num + 1] = false;
         beforePos = stairs[num == 0 ? 19 : num - 1].transform.position;
         switch (state) {
             case State.leftDir:
@@ -112,54 +106,38 @@ public class GameManager : MonoBehaviour {
 
         //Coin object activation according to random probability
         if (Random.Range(1, 9) < 3) objectManager.MakeObj("coin", num);
-
-        if (--stairCount == 0) {
-            //Direction change required
+        if (Random.Range(1, 9) < 3) {
             if (state == State.leftDir) state = State.rightDir;
             else if (state == State.rightDir) state = State.leftDir;
-            stairCount = Random.Range(1, 9);
-            PushQueue(stairCount);
-        }
-    }
-
-
-
-    //Put Information Of Stairs In Queue
-    void PushQueue(int stairCount) {
-        for (int i = 0; i < stairCount; i++) {
-            if (i == 0) stairInform.Enqueue(1);
-            else stairInform.Enqueue(0);
+            IsChangeDir[num+1 == 20? 0 : num+1] = true;
         }
     }
 
 
 
     //Stairs Moving Along The Direction       
-    public void StairMove(int buttonIndex, bool isleft) {
+    public void StairMove(int stairIndex, bool isChange, bool isleft) {
         if (player.isDie) return;
-        int stairIndex = stairInform.Dequeue();
-        print("dequeue" + stairIndex);
-        print(buttonIndex);
 
         //Move stairs to the right or left
-        for (int i = 0; i < stairs.Length; i++) {
+        for (int i = 0; i < 20; i++) {
             if (isleft) stairs[i].transform.position += leftDir;
             else stairs[i].transform.position += rightDir;
         }
 
         //Move the stairs below a certain height
-        for (int i = 0; i < stairs.Length; i++)
+        for (int i = 0; i < 20; i++)
             if (stairs[i].transform.position.y < -5) SpawnStair(i);
 
         //Game over if climbing stairs is wrong
-        if (buttonIndex != stairIndex) {
+        if(IsChangeDir[stairIndex] != isChange) {
             GameOver();
             return;
         }
 
         //Score Update & Gauge Increase
         scoreText.text = (++score).ToString();
-        gauge.fillAmount += 0.2f;
+        gauge.fillAmount += 1.1f;
         backGround.transform.position += backGround.transform.position.y < -14f ?
             new Vector3(0, 4.7f, 0) : new Vector3(0, -0.05f, 0);
     }
@@ -169,11 +147,13 @@ public class GameManager : MonoBehaviour {
     void GaugeReduce() {
         if (gaugeStart) {
             //Gauge Reduction Rate Increases As Score Increases
-            if (score > 30) gaugeRedcutionRate = 0.0023f;
-            if (score > 60) gaugeRedcutionRate = 0.003f;
-            if (score > 100) gaugeRedcutionRate = 0.0035f;
-            if (score > 150) gaugeRedcutionRate = 0.004f;
+            if (score > 30) gaugeRedcutionRate = 0.0033f;
+            if (score > 60) gaugeRedcutionRate = 0.0037f;
+            if (score > 100) gaugeRedcutionRate = 0.0043f;
+            if (score > 150) gaugeRedcutionRate = 0.005f;
             if (score > 200) gaugeRedcutionRate = 0.005f;
+            if (score > 300) gaugeRedcutionRate = 0.0065f;
+            if (score > 400) gaugeRedcutionRate = 0.0075f;
             gauge.fillAmount -= gaugeRedcutionRate;
         }
         Invoke("GaugeReduce", 0.01f);
@@ -210,32 +190,26 @@ public class GameManager : MonoBehaviour {
     }
 
 
+
     public void BtnDown(GameObject btn) {
         btn.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
         if (btn.name == "ClimbBtn") {
-            player.isClimbBtn = true;
-            player.Climb();            
+            player.Climb(false);
+
         }
-        if (btn.name == "ChangeDirBtn") {
-            player.isChangeDirBtn = true;
-            player.ChangeDir();
+        else if (btn.name == "ChangeDirBtn") {
+            player.Climb(true);
+
         }
     }
 
 
     public void BtnUp(GameObject btn) {
         btn.transform.localScale = new Vector3(1f, 1f, 1f);
-        if (btn.name == "ClimbBtn") {
-            player.isClimbBtn = false;
-        }
-        if (btn.name == "ChangeDirBtn") {
-            player.isChangeDirBtn = false;
-        }
+        
 
-        if (btn.name == "PauseBtn") CancelInvoke();
-        if (btn.name == "ResumeBtn") GaugeReduce();
-       
-            
+       if (btn.name == "PauseBtn") CancelInvoke();
+       if (btn.name == "ResumeBtn") GaugeReduce();           
     }
 
 
@@ -302,7 +276,6 @@ public class GameManager : MonoBehaviour {
                 vibrationOn = dslManager.GetSettingOn(type);
                 break;
         }       
-        print(dslManager.GetSettingOn(type));
     }
 
     void Vibration()
@@ -310,6 +283,7 @@ public class GameManager : MonoBehaviour {
         Handheld.Vibrate();
         sound[0].playOnAwake = false;
     }
+
 
     public void PlaySound(int index) {
         sound[index].Play();

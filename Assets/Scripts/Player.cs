@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     public DSLManager dslManager;
     public bool isStairMove = false, isleft = true, isDie = false, 
         isClimbBtn = false, isChangeDirBtn = false;
-    public int buttonIndex, money;
+    public int stairIndex = 0 , money;
 
     void Start()
     {
@@ -18,19 +18,12 @@ public class Player : MonoBehaviour
         money = dslManager.GetMoney();
     }
 
-    public void Climb()
+    public void Climb(bool isChange)
     {
-        if (isDie || isChangeDirBtn) return;
-        gameManager.StairMove(0,isleft);
-        MoveAnimation();
-        isStairMove = true;
-    }
-
-    public void ChangeDir()
-    {
-        if (isDie || isClimbBtn) return;
-        isleft = !isleft;
-        gameManager.StairMove(1, isleft);
+        if (isDie ) return;
+        if (isChange) isleft = !isleft;
+        gameManager.StairMove(stairIndex, isChange, isleft);
+        if (++stairIndex == 20) stairIndex = 0;
         MoveAnimation();
         isStairMove = true;
     }
@@ -43,7 +36,7 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, -180, 0);
         else
             transform.rotation = Quaternion.Euler(0, 0, 0);
-
+        if (isDie) return;
         anim.SetBool("Move",true);
         gameManager.PlaySound(1);
         Invoke("IdleAnimation", 0.05f);

@@ -284,7 +284,7 @@ Transform:
   m_GameObject: {fileID: 3462312952820886024}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.4, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.93, z: 1}
+  m_LocalScale: {x: 0.87, y: 0.9, z: 1}
   m_Children:
   - {fileID: 6595789214371213803}
   - {fileID: 2012511342402040501}
@@ -314,7 +314,9 @@ MonoBehaviour:
   isStairMove: 0
   isleft: 1
   isDie: 0
-  buttonIndex: 0
+  isClimbBtn: 0
+  isChangeDirBtn: 0
+  stairIndex: 0
   money: 0
 --- !u!212 &3462312952820886026
 SpriteRenderer:

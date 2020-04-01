@@ -24,11 +24,11 @@ public class ObjectManager : MonoBehaviour
         for(int i=0; i<coin.Length; i++)
         {
             coin[i] = Instantiate(coinPrefab, gameManager.stairs[i].transform);
-            coin[i].transform.position += new Vector3(0, 0.8f, 0);
+            coin[i].transform.position += new Vector3(0, 0.6f, 0);
             coin[i].SetActive(false);
         }
 
-        player = Instantiate(characterPrefabs[dslManager.GetSelectedCharIndex()], new Vector3(0f, -0.6f, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
+        player = Instantiate(characterPrefabs[dslManager.GetSelectedCharIndex()], new Vector3(0f, -0.5f, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
     }
 
     public void MakeObj(string type, int index)

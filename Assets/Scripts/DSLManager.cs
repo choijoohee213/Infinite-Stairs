@@ -64,8 +64,7 @@ public class DSLManager : MonoBehaviour
 
     private void Start(){
 
-        //Saved Data
-        
+        //Saved Data       
         characters.Add(new Character("BusinessMan", "회사원", 0, true, true));
         characters.Add(new Character("Rapper", "래퍼",500, false, false));
         characters.Add(new Character("Secretary", "비서",500, false, false));
@@ -209,8 +208,6 @@ public class DSLManager : MonoBehaviour
         for (int i = 0; i < rankingText.Length; i++) {
             rankingText[i].text = rankings[i].score == 0? " " : rankings[i].score.ToString();
             rankCharacterImg[i].sprite = characterSprite[rankings[i].characterIndex];
-            //if (rankings[i].characterIndex == 7) rankCharacterImg[i].sprite = Noncharacter;
-            //else rankCharacterImg[i].sprite = characterSprite[rankings[i].characterIndex];
         }
     }
 
@@ -269,10 +266,9 @@ public class DSLManager : MonoBehaviour
     }
 
 
-    private void OnApplicationQuit() {
+    private void OnApplicationPause() {
         ChangeRetry(false);
+        gameManager.LoadScene(0);
     }
-
-
-
+    
 }
