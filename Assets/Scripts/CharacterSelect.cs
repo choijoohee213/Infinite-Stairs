@@ -13,7 +13,7 @@ public class CharacterSelect : MonoBehaviour
     public Image characterImage;
     public Text characterName, price;
 
-    private void Awake() {     
+    private void Awake() {
         index = dslManager.GetSelectedCharIndex();
         sound = GetComponent<AudioSource>();
         sound.mute = !dslManager.GetSettingOn("SoundBtn");
@@ -30,6 +30,7 @@ public class CharacterSelect : MonoBehaviour
         if (dir == "Left") { 
              if (--index == -1) index = dslManager.characterSprite.Length - 2; }
 
+        //Change the character information of the index
         characterImage.sprite = dslManager.characterSprite[index];
         characterName.text = characterNames[index];
         price.text = "￦" + dslManager.GetPrice().ToString();

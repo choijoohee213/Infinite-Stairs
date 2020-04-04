@@ -5,16 +5,15 @@ using UnityEngine;
 public class ObjectManager : MonoBehaviour
 {
     public GameManager gameManager;
-    public DSLManager dslManager;
     public GameObject coinPrefab;
-    public GameObject[] characterPrefabs;
 
     GameObject[] coin;
-    public GameObject player;
     GameObject[] targetPool;
 
     void Awake()
     {
+        print("5");
+
         coin = new GameObject[20];
         Generate();
     }
@@ -27,8 +26,7 @@ public class ObjectManager : MonoBehaviour
             coin[i].transform.position += new Vector3(0, 0.6f, 0);
             coin[i].SetActive(false);
         }
-
-        player = Instantiate(characterPrefabs[dslManager.GetSelectedCharIndex()], new Vector3(0f, -0.5f, 0), Quaternion.Euler(new Vector3(0, 0, 0)));
+       
     }
 
     public void MakeObj(string type, int index)
@@ -38,7 +36,6 @@ public class ObjectManager : MonoBehaviour
             case "coin":
                 targetPool = coin;
                 break;
-
         }
 
         if (!targetPool[index].activeSelf)
@@ -47,16 +44,4 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-
-    public GameObject[] GetPool(string type)
-    {
-        switch (type)
-        {
-            case "coin":
-                targetPool = coin;
-                break;
-           
-        }
-        return targetPool;
-    }
 }

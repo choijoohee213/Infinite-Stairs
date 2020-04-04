@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
     public ObjectManager objectManager;
     public DSLManager dslManager;
     public DontDestory dontDestory;
-    public GameObject[] stairs, UI;
+    public GameObject[] players, stairs, UI;
     public GameObject pauseBtn, backGround;
 
     public AudioSource[] sound;
@@ -17,8 +17,8 @@ public class GameManager : MonoBehaviour {
     public Image gauge;
     public Button[] settingButtons;
 
-    int score, sceneCount;
-    bool gaugeStart = false, vibrationOn = true;
+    int score, sceneCount, selectedIndex;
+    public bool gaugeStart = false, vibrationOn = true, isGamePaused = false;
     float gaugeRedcutionRate = 0.0025f;
     public bool[] IsChangeDir = new bool[20];
 
@@ -34,33 +34,27 @@ public class GameManager : MonoBehaviour {
 
 
     void Awake() {
-
-        player = objectManager.player.GetComponent<Player>();
-        player.gameManager = this;
-        player.dslManager = dslManager;
-
-        Init();
+        players[selectedIndex].SetActive(true);
+        player = players[selectedIndex].GetComponent<Player>();
+        StairsInit();
         GaugeReduce();
         UI[0].SetActive(dslManager.IsRetry());
-        UI[1].SetActive(!dslManager.IsRetry());
+        UI[1].SetActive(!dslManager.IsRetry());        
     }
 
+    /*
+    private void Start() {
+        StartCoroutine("CheckGauge");
+    }*/
 
-    void Update() {
-        if (player.isStairMove) {
-            player.isStairMove = false;
-            gaugeStart = true;
-        }
-
-        //Game Over When Gauge Becomes 0
-        if (gauge.fillAmount == 0 && !player.isDie)
+    private void Update() {
+        if (!player.isDie && gauge.fillAmount == 0)
             GameOver();
     }
 
 
-
     //Initially Spawn The Stairs
-    void Init() {
+    void StairsInit() {
         for (int i = 0; i < 20; i++) {
             switch (state) {
                 case State.start:
@@ -137,13 +131,13 @@ public class GameManager : MonoBehaviour {
 
         //Score Update & Gauge Increase
         scoreText.text = (++score).ToString();
-        gauge.fillAmount += 1.1f;
+        gauge.fillAmount += 0.7f ;
         backGround.transform.position += backGround.transform.position.y < -14f ?
             new Vector3(0, 4.7f, 0) : new Vector3(0, -0.05f, 0);
     }
 
 
-
+    //#.Gauge
     void GaugeReduce() {
         if (gaugeStart) {
             //Gauge Reduction Rate Increases As Score Increases
@@ -159,6 +153,14 @@ public class GameManager : MonoBehaviour {
         Invoke("GaugeReduce", 0.01f);
     }
 
+    /*
+    IEnumerator CheckGauge() {
+        while (gauge.fillAmount != 0) {
+            yield return new WaitForSeconds(0.4f);
+        }
+        GameOver();
+    }*/
+
 
     void GameOver() {
         //Animation
@@ -169,23 +171,23 @@ public class GameManager : MonoBehaviour {
         ShowScore();
         pauseBtn.SetActive(false);
 
-        dslManager.SaveMoney(player.money);
         player.isDie = true;
+        player.MoveAnimation();
         if (vibrationOn) Vibration();
+        dslManager.SaveMoney(player.money);
 
         CancelInvoke();  //GaugeBar Stopped      
         Invoke("DisableUI", 1.5f);
-        dontDestory.InvokeDestoryObj();
-
     }
 
+    //Show score after game over
     void ShowScore() {
         finalScoreText.text = score.ToString();
         dslManager.SaveRankScore(score);
         bestScoreText.text = dslManager.GetBestScore().ToString();
 
-        //If you set the highest record
-        if (score == dslManager.GetBestScore())
+        //When the highest score is recorded
+        if (score == dslManager.GetBestScore() && score != 0)
             UI[2].SetActive(true);
     }
 
@@ -193,28 +195,35 @@ public class GameManager : MonoBehaviour {
 
     public void BtnDown(GameObject btn) {
         btn.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-        if (btn.name == "ClimbBtn") {
-            player.Climb(false);
-
-        }
-        else if (btn.name == "ChangeDirBtn") {
-            player.Climb(true);
-
-        }
+        if (btn.name == "ClimbBtn")  player.Climb(false);
+        else if (btn.name == "ChangeDirBtn") player.Climb(true);
     }
 
 
     public void BtnUp(GameObject btn) {
         btn.transform.localScale = new Vector3(1f, 1f, 1f);
-        
-
-       if (btn.name == "PauseBtn") CancelInvoke();
-       if (btn.name == "ResumeBtn") GaugeReduce();           
+        if (btn.name == "PauseBtn") {
+            CancelInvoke();
+            isGamePaused = true;
+        }
+        if (btn.name == "ResumeBtn") {
+            GaugeReduce();
+            isGamePaused = false;
+        }
     }
 
 
 
     //#.Setting
+    public void SoundInit() {
+        selectedIndex = dslManager.GetSelectedCharIndex();
+        player = players[selectedIndex].GetComponent<Player>();
+        sound[3] = player.sound[0];
+        sound[4] = player.sound[1];
+        sound[5] = player.sound[2];
+    }
+
+
     public void SettingBtnInit() {
         bool on;
         for (int i = 0; i < 2; i++) {
@@ -241,20 +250,17 @@ public class GameManager : MonoBehaviour {
         bool on = dslManager.GetSettingOn(btn.name);
         if (btn.name == "BgmBtn")
             for (int i = 0; i < 2; i++) {
-                on = dslManager.GetSettingOn(btn.name);
                 if (on) settingButtons[i].image.color = new Color(1, 1, 1, 1f);
                 else settingButtons[i].image.color = new Color(1, 1, 1, 0.5f);
             }
         if (btn.name == "SoundBtn") {
-            for (int i = 2; i < 4; i++) {
-                on = dslManager.GetSettingOn("SoundBtn");
+            for (int i = 2; i < 4; i++) {               
                 if (on) settingButtons[i].image.color = new Color(1, 1, 1, 1f);
                 else settingButtons[i].image.color = new Color(1, 1, 1, 0.5f);
             }
         }
         if (btn.name == "VibrateBtn") {
             for (int i = 4; i < 6; i++) {
-                on = dslManager.GetSettingOn("VibrateBtn");
                 if (on) settingButtons[i].image.color = new Color(1, 1, 1, 1f);
                 else settingButtons[i].image.color = new Color(1, 1, 1, 0.5f);
             }
@@ -268,9 +274,9 @@ public class GameManager : MonoBehaviour {
                 else dontDestory.BgmStop();
                 break;
             case "SoundBtn":
-                for (int i = 0; i < sound.Length; i++)
-                    sound[i].mute = !dslManager.GetSettingOn(type);
-                player.SoundOnOff(dslManager.GetSettingOn(type));
+                bool isOn = !dslManager.GetSettingOn(type);
+                for (int i = 0; i < sound.Length; i++) 
+                    sound[i].mute = isOn;
                 break;
             case "VibrateBtn":
                 vibrationOn = dslManager.GetSettingOn(type);
@@ -297,8 +303,11 @@ public class GameManager : MonoBehaviour {
 
     public void LoadScene(int i)
     {
-        dslManager.SaveMoney(player.money);
         SceneManager.LoadScene(i);
     }
 
+    
+    private void OnApplicationQuit() {
+        dslManager.SaveMoney(player.money);
+    }   
 }

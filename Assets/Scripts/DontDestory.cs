@@ -7,35 +7,34 @@ public class DontDestory : MonoBehaviour
     public static DontDestory Instance;
     AudioSource bgm;
 
-    private void Start() {
-        bgm = GetComponent<AudioSource>();
-    }
+    //Singleton Pattern
     private void Awake() {
-       
         if (Instance != null) {
             Destroy(gameObject);
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
-        
+        DontDestroyOnLoad(gameObject)
+;    }
+
+    private void Start() {
+        bgm = GetComponent<AudioSource>();
     }
 
-    public void InvokeDestoryObj() {
-        Invoke("DestoryObj", 1.5f);
-    }
-
-    void DestoryObj() {
-        Destroy(gameObject);
-    }
 
     public void BgmPlay() {
-        bgm = Instance.GetComponent<AudioSource>();
+        if (Instance == null)
+            bgm = gameObject.GetComponent<AudioSource>();
+        else
+            bgm = Instance.GetComponent<AudioSource>();
         bgm.enabled = true;
     }
 
     public void BgmStop() {
-        bgm = Instance.GetComponent<AudioSource>();
+        if (Instance == null)
+            bgm = gameObject.GetComponent<AudioSource>();
+        else
+            bgm = Instance.GetComponent<AudioSource>();
         bgm.enabled = false;
     }
 }
