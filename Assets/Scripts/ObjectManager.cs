@@ -12,8 +12,6 @@ public class ObjectManager : MonoBehaviour
 
     void Awake()
     {
-        print("5");
-
         coin = new GameObject[20];
         Generate();
     }
@@ -43,5 +41,4 @@ public class ObjectManager : MonoBehaviour
             targetPool[index].SetActive(true);
         }
     }
-
 }

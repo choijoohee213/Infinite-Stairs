@@ -50,7 +50,7 @@ public class DSLManager : MonoBehaviour {
     List<Inform> informs = new List<Inform>();
 
     public GameManager gameManager;
-    public CharacterSelect characterSelect;
+    public CharacterManager CharacterManager;
     public Text[] moneyText, rankingText;
     public Sprite[] characterSprite;
     public Image[] rankCharacterImg;
@@ -107,10 +107,9 @@ public class DSLManager : MonoBehaviour {
 
 
     public void DataLoad() {
-        string jdata_0, jdata_1, jdata_2;
-        jdata_0 = File.ReadAllText(Application.persistentDataPath + "/Characters.json");
-        jdata_1 = File.ReadAllText(Application.persistentDataPath + "/Rankings.json");
-        jdata_2 = File.ReadAllText(Application.persistentDataPath + "/Informs.json");
+        string jdata_0 = File.ReadAllText(Application.persistentDataPath + "/Characters.json");
+        string jdata_1 = File.ReadAllText(Application.persistentDataPath + "/Rankings.json");
+        string jdata_2 = File.ReadAllText(Application.persistentDataPath + "/Informs.json");
       
         byte[] bytes_0 = System.Convert.FromBase64String(jdata_0);
         byte[] bytes_1 = System.Convert.FromBase64String(jdata_1);
@@ -133,7 +132,7 @@ public class DSLManager : MonoBehaviour {
     public void SaveCharacterIndex() {
         for (int i = 0; i < characters.Count; i++)
             characters[i].selected = false;
-        characters[characterSelect.index].selected = true;
+        characters[CharacterManager.index].selected = true;
         DataSave();
         SceneManager.LoadScene(0);
     }
@@ -155,21 +154,21 @@ public class DSLManager : MonoBehaviour {
     }
 
     public void SaveCharacterPurchased(Animator obj) {
-        if (characters[characterSelect.index].price > informs[0].money)
+        if (characters[CharacterManager.index].price > informs[0].money)
             obj.GetComponent<Animator>().SetTrigger("notice");
         else {
             //Edit the data after buying a character
-            characters[characterSelect.index].purchased = true;
+            characters[CharacterManager.index].purchased = true;
             DataSave();
             DataLoad();
-            informs[0].money -= characters[characterSelect.index].price;
+            informs[0].money -= characters[CharacterManager.index].price;
             DataSave();
             LoadMoney(informs[0].money);
-            characterSelect.ArrowBtn("null");
+            CharacterManager.ArrowBtn("null");
         }
     }
 
-    public int GetPrice() { return characters[characterSelect.index].price; }
+    public int GetPrice() { return characters[CharacterManager.index].price; }
 
 
 

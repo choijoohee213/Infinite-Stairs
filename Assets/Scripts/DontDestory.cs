@@ -14,13 +14,8 @@ public class DontDestory : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject)
-;    }
-
-    private void Start() {
-        bgm = GetComponent<AudioSource>();
+        DontDestroyOnLoad(gameObject);
     }
-
 
     public void BgmPlay() {
         if (Instance == null)

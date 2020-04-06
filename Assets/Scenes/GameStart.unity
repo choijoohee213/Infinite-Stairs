@@ -1487,11 +1487,8 @@ MonoBehaviour:
   - {fileID: 1573709169}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 5
   stairIndex: 0
   money: 0
@@ -3483,7 +3480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1583425216}
-  characterSelect: {fileID: 0}
+  CharacterManager: {fileID: 0}
   moneyText:
   - {fileID: 1075793757}
   - {fileID: 435803244}
@@ -4259,11 +4256,8 @@ MonoBehaviour:
   - {fileID: 882665355}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 2
   stairIndex: 0
   money: 0
@@ -5781,11 +5775,8 @@ MonoBehaviour:
   - {fileID: 550236840}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 0
   stairIndex: 0
   money: 0
@@ -8117,11 +8108,8 @@ MonoBehaviour:
   - {fileID: 368460515}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 6
   stairIndex: 0
   money: 0
@@ -8755,11 +8743,8 @@ MonoBehaviour:
   - {fileID: 1450794833}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 4
   stairIndex: 0
   money: 0
@@ -13356,11 +13341,8 @@ MonoBehaviour:
   - {fileID: 1257318936}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 1
   stairIndex: 0
   money: 0
@@ -13857,11 +13839,8 @@ MonoBehaviour:
   - {fileID: 1420743843822829914}
   gameManager: {fileID: 1583425216}
   dslManager: {fileID: 464379068}
-  isStairMove: 0
   isleft: 1
   isDie: 0
-  isClimbBtn: 0
-  isChangeDirBtn: 0
   characterIndex: 3
   stairIndex: 0
   money: 0

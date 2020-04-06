@@ -36,20 +36,13 @@ public class GameManager : MonoBehaviour {
     void Awake() {
         players[selectedIndex].SetActive(true);
         player = players[selectedIndex].GetComponent<Player>();
+
         StairsInit();
         GaugeReduce();
+        StartCoroutine("CheckGauge");
+
         UI[0].SetActive(dslManager.IsRetry());
         UI[1].SetActive(!dslManager.IsRetry());        
-    }
-
-    /*
-    private void Start() {
-        StartCoroutine("CheckGauge");
-    }*/
-
-    private void Update() {
-        if (!player.isDie && gauge.fillAmount == 0)
-            GameOver();
     }
 
 
@@ -153,13 +146,13 @@ public class GameManager : MonoBehaviour {
         Invoke("GaugeReduce", 0.01f);
     }
 
-    /*
+    
     IEnumerator CheckGauge() {
         while (gauge.fillAmount != 0) {
             yield return new WaitForSeconds(0.4f);
         }
         GameOver();
-    }*/
+    }
 
 
     void GameOver() {
@@ -179,6 +172,7 @@ public class GameManager : MonoBehaviour {
         CancelInvoke();  //GaugeBar Stopped      
         Invoke("DisableUI", 1.5f);
     }
+
 
     //Show score after game over
     void ShowScore() {
@@ -203,7 +197,7 @@ public class GameManager : MonoBehaviour {
     public void BtnUp(GameObject btn) {
         btn.transform.localScale = new Vector3(1f, 1f, 1f);
         if (btn.name == "PauseBtn") {
-            CancelInvoke();
+            CancelInvoke();  //Gauge Stopped
             isGamePaused = true;
         }
         if (btn.name == "ResumeBtn") {

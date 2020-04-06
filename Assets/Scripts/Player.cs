@@ -8,8 +8,8 @@ public class Player : MonoBehaviour
     public AudioSource[] sound;
     public GameManager gameManager;
     public DSLManager dslManager;
-    public bool isleft = true, isDie = false, isClimbBtn = false, isChangeDirBtn = false;
-    public int characterIndex, stairIndex = 0, money;
+    public bool isleft = true, isDie = false;
+    public int characterIndex, stairIndex, money;
 
     void Awake() {
         anim = gameObject.GetComponent<Animator>();
