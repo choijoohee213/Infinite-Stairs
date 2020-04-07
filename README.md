@@ -13,4 +13,4 @@ NFLY STUDIO 에서 만든 인기 모바일 게임입니다.
 실행 영상(Youtube Link)
 
 
-[![Video Label](http://img.youtube.com/vi/JLBEN9_3LTI/0.jpg)](https://www.youtube.com/watch?v=JLBEN9_3LTI)
+[![Video Label](http://img.youtube.com/vi/1_qvZZplFsQ/0.jpg)](https://www.youtube.com/watch?v=1_qvZZplFsQ)
